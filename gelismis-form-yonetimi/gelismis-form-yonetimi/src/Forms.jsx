@@ -20,7 +20,6 @@ const Forms = () => {
     lastName: "",
     email: "",
     password: "",
-    role: false,
     terms: false,
   });
   const [valid, setValid] = useState(false);
@@ -32,7 +31,6 @@ const Forms = () => {
     email: Yup.string().required("enter a valid email address"),
     password: Yup.string().min(6, "password must be at least 6 characters").required("enter a valid password"),
     terms: Yup.boolean().required("You must agree"),
-    role: Yup.string().oneOf(["frontEnd","backEnd","wordPress"])
   });
 
   const submitHandler = (e) => {
@@ -42,7 +40,6 @@ const Forms = () => {
       .post("https://reqres.in/api/users", form)
       .then((res) => {
         setUsers([...users, res.data]);
-        // setForm({});
         if (users.find(user => user.email === "waffle@syrup.com")) {
           alert('kullanici mevcut');
           return;
@@ -91,17 +88,17 @@ const Forms = () => {
       <form style={{ maxWidth: "400px", margin: "auto", marginTop: "5%", marginBottom: "40px", background: "whitesmoke", padding: "20px" }} onSubmit={submitHandler}>
         <UncontrolledDropdown group>
           <Button color="primary">
-            Select a Role
+          {form.role ? form.role : "Select a Role"}
           </Button>
           <DropdownToggle caret color="primary" />
           <DropdownMenu>
-            <DropdownItem onClick={() => handleSelect("frontEnd")} name="frontEnd" id="frontEnd" value="frontEnd">
+            <DropdownItem onClick={() => handleSelect("Front-end Developer")} name="frontEnd" id="frontEnd" value="frontEnd">
               Front-end Developer
             </DropdownItem>
-            <DropdownItem onClick={() => handleSelect("backEnd")} name="backEnd" id="backEnd" value="backEnd">
+            <DropdownItem onClick={() => handleSelect("Back-end Developer")} name="backEnd" id="backEnd" value="backEnd">
               Back-end Developer
             </DropdownItem>
-            <DropdownItem onClick={() => handleSelect("wordPress")} name="wordPress" id="wordPress" value="wordPress">
+            <DropdownItem onClick={() => handleSelect("WordPress Developer")} name="wordPress" id="wordPress" value="wordPress">
               WordPress Developer
             </DropdownItem>
           </DropdownMenu>
@@ -109,15 +106,15 @@ const Forms = () => {
         <div className="name-section">
           <FormGroup>
             <Label for="firstName">First Name</Label>
-            <Input type="text" name="firstName" id="firstName"
+            <Input  data-cy="input-name" type="text" name="firstName" id="firstName"
               onChange={inputChangeHandler}
               value={form.firstName}
               invalid={!!formErrs.firstName} />
-            <FormFeedback>{formErrs.firstName}</FormFeedback>
+            <FormFeedback data-cy="error-name">{formErrs.firstName}</FormFeedback>
           </FormGroup>
           <FormGroup>
             <Label for="lastName">Last Name</Label>
-            <Input type="text" name="lastName" id="lastName"
+            <Input data-cy="input-lastname" type="text" name="lastName" id="lastName"
               onChange={inputChangeHandler}
               value={form.lastName}
               invalid={!!formErrs.lastName} />
@@ -126,7 +123,7 @@ const Forms = () => {
         </div>
         <FormGroup>
           <Label for="email">Email</Label>
-          <Input type="email" name="email" id="email"
+          <Input data-cy="email-input" type="email" name="email" id="email"
             onChange={inputChangeHandler}
             value={form.email}
             invalid={!!formErrs.email} />
@@ -134,7 +131,7 @@ const Forms = () => {
         </FormGroup>
         <FormGroup>
           <Label for="password">Password</Label>
-          <Input type="password" name="password" id="password"
+          <Input data-cy="pass-input" type="password" name="password" id="password"
             onChange={inputChangeHandler}
             value={form.password}
             invalid={!!formErrs.password} />
@@ -143,7 +140,7 @@ const Forms = () => {
 
         <FormGroup check>
           <Label check>
-            <Input name="terms" id="terms" type="checkbox"
+            <Input data-cy="input-terms" name="terms" id="terms" type="checkbox"
               onChange={inputCheckboxHandler}
               checked={form.terms}
               invalid={!!formErrs.terms} />{' '}
@@ -151,12 +148,13 @@ const Forms = () => {
           </Label>
         </FormGroup>
         <FormFeedback>{formErrs.terms}</FormFeedback>
-        <Button style={{ marginTop: "15px" }} disabled={!valid}>Submit</Button>
+        <Button data-cy="input-submit" style={{ marginTop: "15px" }} disabled={!valid}>Submit</Button>
       </form>
       <h2>Eklenen Kullanicilar</h2>
       {users.map((user) => (
-        <div key={user.id} onClick={() => kullaniciSil(user.id)} className="eklenenler">
-          <p><b>Name & Last name:</b>{user.firstName} {user.lastName}</p>
+        <div data-cy="eklenen" className="eklenenler">
+          <span data-cy="sil" className="sil" key={user.id} onClick={() => kullaniciSil(user.id)} >⛔</span>
+          <p><b>Name: </b>{user.firstName} {user.lastName}</p>
           <p><b>Email:</b> {user.email}</p>
           <p><b>Role:</b> {user.role}</p>
         </div>

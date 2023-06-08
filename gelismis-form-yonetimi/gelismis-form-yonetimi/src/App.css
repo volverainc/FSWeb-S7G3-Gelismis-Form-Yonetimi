@@ -57,3 +57,10 @@
   background-color: lightgray;
   cursor: pointer;
 }
+
+.sil {
+  margin-top: -10px;
+  cursor: pointer;
+  font-size: 1.2em;
+  float: right;
+}
